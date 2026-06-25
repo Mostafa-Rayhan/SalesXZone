@@ -12,4 +12,8 @@
     <Folder Include="Enums\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SalesXZone.Infrastructure\SalesXZone.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

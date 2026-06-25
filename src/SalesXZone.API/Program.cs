@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SalesXZone.Application.Interfaces;
 using SalesXZone.Application.Services;
-using SalesXZone.Core.Interfaces;
+//using SalesXZone.Core.Interfaces;
 using SalesXZone.Infrastructure.Data;
 using SalesXZone.Infrastructure.Repositories;
 
@@ -15,6 +15,10 @@ builder.Services.AddSwaggerGen();
 // Add DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+// repository that calls stored proc (uses IConfiguration internally)
+builder.Services.AddScoped<StoredProcItemRepository>();
+// application service
+builder.Services.AddScoped<IItemMasterService, ItemMasterService>();
 
 // Register Repositories and Unit of Work
 //builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
-using SalesXZone.Core.Entities;
+//using SalesXZone.Core.Entities;
 
 namespace SalesXZone.Infrastructure.Data
 {
