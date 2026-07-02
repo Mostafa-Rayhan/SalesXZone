@@ -16,7 +16,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 // repository that calls stored proc (uses IConfiguration internally)
-builder.Services.AddScoped<StoredProcItemRepository>();
+builder.Services.AddScoped<IItemRepository, StoredProcItemRepository>();
 // application service
 builder.Services.AddScoped<IItemMasterService, ItemMasterService>();
 
@@ -50,5 +50,6 @@ app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 app.UseAuthorization();
 app.MapControllers();
+app.MapGet("/", () => "SalesXZone API is running successfully.");
 
 app.Run();

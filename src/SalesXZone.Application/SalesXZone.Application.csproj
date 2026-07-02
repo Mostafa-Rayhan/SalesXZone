@@ -8,7 +8,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SalesXZone.Core\SalesXZone.Core.csproj" />
-    <ProjectReference Include="..\SalesXZone.Infrastructure\SalesXZone.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<ProjectReference Include="..\SalesXZone.Core\SalesXZone.Core.csproj" />
   </ItemGroup>
 
 </Project>

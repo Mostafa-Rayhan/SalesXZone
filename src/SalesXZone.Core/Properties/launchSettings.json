@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "SalesXZone.Core": {
+      "commandName": "Project",
+      "jsWebView2Debugging": true,
+      "debugEngines": "managed"
+    }
+  }
+}

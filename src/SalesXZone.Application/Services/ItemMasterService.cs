@@ -1,14 +1,13 @@
 ﻿using SalesXZone.Application.Interfaces;
 using SalesXZone.Application.Models;
-using SalesXZone.Infrastructure.Repositories;
 
 namespace SalesXZone.Application.Services
 {
     public class ItemMasterService : IItemMasterService
     {
-        private readonly StoredProcItemRepository _repo;
+        private readonly IItemRepository _repo;
 
-        public ItemMasterService(StoredProcItemRepository repo)
+        public ItemMasterService(IItemRepository repo)
         {
             _repo = repo;
         }

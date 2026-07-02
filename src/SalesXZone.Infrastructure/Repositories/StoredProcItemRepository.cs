@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-//using SalesXZone.Application.Models;
+using SalesXZone.Application.Models;
+using SalesXZone.Application.Interfaces;
 using System.Data;
 
 namespace SalesXZone.Infrastructure.Repositories
@@ -9,7 +10,7 @@ namespace SalesXZone.Infrastructure.Repositories
     /// Repository that calls spITEMS stored procedure.
     /// Uses ADO.NET (no DbContext) to execute the proc and map results.
     /// </summary>
-    public class StoredProcItemRepository
+public class StoredProcItemRepository : IItemRepository
     {
         private readonly string _connectionString;
 

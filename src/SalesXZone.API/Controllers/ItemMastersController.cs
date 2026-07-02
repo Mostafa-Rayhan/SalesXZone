@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using SalesXZone.Application.Interfaces;
 using SalesXZone.Application.Models;
 
