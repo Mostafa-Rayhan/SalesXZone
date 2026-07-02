@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SalesXZone.Application.Interfaces;
 using SalesXZone.Application.Services;
-//using SalesXZone.Core.Interfaces;
 using SalesXZone.Infrastructure.Data;
 using SalesXZone.Infrastructure.Repositories;
 
@@ -39,17 +38,24 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+app.UseSwaggerUI(options =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    options.RoutePrefix = string.Empty; // Swagger UI at "/"
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "SalesXZone API V1");
+});
+
+// Configure the HTTP request pipeline
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
 
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 app.UseAuthorization();
 app.MapControllers();
-app.MapGet("/", () => "SalesXZone API is running successfully.");
+//app.MapGet("/swagger/", () => "SalesXZone API is running successfully.");
 
 app.Run();

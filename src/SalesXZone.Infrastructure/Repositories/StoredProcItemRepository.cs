@@ -71,6 +71,7 @@ public class StoredProcItemRepository : IItemRepository
         public async Task<ItemMasterModel?> GetItemByIdAsync(int itemId, CancellationToken cancellationToken = default)
         {
             await using var conn = new SqlConnection(_connectionString);
+
             await conn.OpenAsync(cancellationToken).ConfigureAwait(false);
 
             await using var cmd = new SqlCommand("dbo.spITEMS", conn)
@@ -80,10 +81,11 @@ public class StoredProcItemRepository : IItemRepository
 
             cmd.Parameters.Add(new SqlParameter("@Action", SqlDbType.VarChar, 10) { Value = "GET" });
             cmd.Parameters.Add(new SqlParameter("@ITEM_ID", SqlDbType.Int) { Value = itemId });
-            cmd.Parameters.Add(new SqlParameter("@ACTIVE_ONLY", SqlDbType.Bit) { Value = 0 }); // include inactive if necessary
+            cmd.Parameters.Add(new SqlParameter("@ACTIVE_ONLY", SqlDbType.Bit) { Value = 0 });
 
-            await using var reader = await cmd.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false);
-            if (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+            await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
+
+            if (await reader.ReadAsync(cancellationToken))
             {
                 return MapReaderToModel(reader);
             }
@@ -109,7 +111,6 @@ public class StoredProcItemRepository : IItemRepository
                 IsActive = r.IsDBNull(r.GetOrdinal("IS_ACTIVE")) ? false : r.GetBoolean(r.GetOrdinal("IS_ACTIVE")),
                 CreatedAt = r.IsDBNull(r.GetOrdinal("CREATED_AT")) ? DateTime.MinValue : r.GetDateTime(r.GetOrdinal("CREATED_AT")),
                 UpdatedAt = r.IsDBNull(r.GetOrdinal("UPDATED_AT")) ? (DateTime?)null : r.GetDateTime(r.GetOrdinal("UPDATED_AT")),
-                CreatedDate = r.IsDBNull(r.GetOrdinal("CreatedDate")) ? DateTime.MinValue : r.GetDateTime(r.GetOrdinal("CreatedDate"))
             };
 
             return model;
