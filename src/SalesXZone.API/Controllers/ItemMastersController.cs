@@ -23,25 +23,30 @@ namespace SalesXZone.API.Controllers
         {
             try
             {
-                if (request == null) return BadRequest(new { message = "Request body required" });
+                if (request == null)
+                    return BadRequest(ApiResponse<object>.Fail("Request body required", "4000"));
 
                 var created = await _itemService.CreateItemAsync(request, cancellationToken).ConfigureAwait(false);
-                return CreatedAtAction(nameof(GetById), new { id = created.ItemId }, created);
+
+                return CreatedAtAction(nameof(GetById), new { id = created.ItemId },
+                    ApiResponse<ItemMasterModel>.Success(created, "Item Created Success", "2001"));
             }
             catch (ArgumentException ex)
             {
                 _logger.LogWarning(ex, "Validation failed");
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(ApiResponse<object>.Fail(ex.Message, "4000"));
             }
             catch (SqlException ex)
             {
                 _logger.LogError(ex, "Database error while adding item");
-                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    ApiResponse<object>.Fail("Database error", "5000"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unexpected error while adding item");
-                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    ApiResponse<object>.Fail("Unexpected error", "5000"));
             }
         }
 
@@ -51,12 +56,14 @@ namespace SalesXZone.API.Controllers
             try
             {
                 var items = await _itemService.GetItemsAsync(activeOnly, cancellationToken).ConfigureAwait(false);
-                return Ok(items);
+
+                return Ok(ApiResponse<List<ItemMasterModel>>.Success(items, "Get Report Success", "2000"));
             }
             catch (SqlException ex)
             {
                 _logger.LogError(ex, "Database error while fetching items");
-                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Database error" });
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    ApiResponse<object>.Fail("Database error", "5000"));
             }
         }
 
@@ -64,8 +71,11 @@ namespace SalesXZone.API.Controllers
         public async Task<IActionResult> GetById(int id, CancellationToken cancellationToken)
         {
             var item = await _itemService.GetItemByIdAsync(id, cancellationToken).ConfigureAwait(false);
-            if (item == null) return NotFound(new { message = "Item not found" });
-            return Ok(item);
+
+            if (item == null)
+                return NotFound(ApiResponse<object>.Fail("Item not found", "4004"));
+
+            return Ok(ApiResponse<ItemMasterModel>.Success(item, "Get Report Success", "2000"));
         }
     }
 }
