@@ -45,6 +45,21 @@ namespace SalesXZone.API.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAll([FromQuery] bool activeOnly = false, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var items = await _itemService.GetItemsAsync(activeOnly, cancellationToken).ConfigureAwait(false);
+                return Ok(items);
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "Database error while fetching items");
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Database error" });
+            }
+        }
+
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id, CancellationToken cancellationToken)
         {

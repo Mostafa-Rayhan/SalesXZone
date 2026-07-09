@@ -9,5 +9,6 @@ namespace SalesXZone.Application.Interfaces
     {
         Task<ItemMasterModel> CreateItemAsync(ItemCreateRequest request, CancellationToken cancellationToken = default);
         Task<ItemMasterModel?> GetItemByIdAsync(int itemId, CancellationToken cancellationToken = default);
+        Task<List<ItemMasterModel>> GetItemsAsync(bool activeOnly = false, CancellationToken cancellationToken = default);
     }
 }

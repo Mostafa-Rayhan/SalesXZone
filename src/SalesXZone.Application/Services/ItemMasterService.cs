@@ -36,5 +36,10 @@ namespace SalesXZone.Application.Services
         {
             return await _repo.GetItemByIdAsync(itemId, cancellationToken).ConfigureAwait(false);
         }
+
+        public async Task<List<ItemMasterModel>> GetItemsAsync(bool activeOnly = false, CancellationToken cancellationToken = default)
+        {
+            return await _repo.GetItemsAsync(activeOnly, cancellationToken).ConfigureAwait(false);
+        }
     }
 }

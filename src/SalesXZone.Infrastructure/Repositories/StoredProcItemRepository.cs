@@ -20,9 +20,6 @@ public class StoredProcItemRepository : IItemRepository
             _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
 
-        /// <summary>
-        /// Calls spITEMS with @Action = 'ADD' and returns the new ITEM_ID.
-        /// </summary>
         public async Task<int> AddItemAsync(ItemCreateRequest dto, CancellationToken cancellationToken = default)
         {
             await using var conn = new SqlConnection(_connectionString);
@@ -64,10 +61,6 @@ public class StoredProcItemRepository : IItemRepository
             throw new Exception("Failed to add item (no id returned).");
         }
 
-        /// <summary>
-        /// Calls spITEMS with @Action = 'GET' and @ITEM_ID to get a single item.
-        /// Maps the resultset to ItemMasterModel.
-        /// </summary>
         public async Task<ItemMasterModel?> GetItemByIdAsync(int itemId, CancellationToken cancellationToken = default)
         {
             await using var conn = new SqlConnection(_connectionString);
@@ -92,6 +85,33 @@ public class StoredProcItemRepository : IItemRepository
 
             return null;
         }
+
+        public async Task<List<ItemMasterModel>> GetItemsAsync(bool activeOnly = false, CancellationToken cancellationToken = default)
+        {
+            var items = new List<ItemMasterModel>();
+
+            await using var conn = new SqlConnection(_connectionString);
+            await conn.OpenAsync(cancellationToken).ConfigureAwait(false);
+
+            await using var cmd = new SqlCommand("dbo.spITEMS", conn)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            // No @ITEM_ID -> proc returns all rows
+            cmd.Parameters.Add(new SqlParameter("@Action", SqlDbType.VarChar, 10) { Value = "GET" });
+            cmd.Parameters.Add(new SqlParameter("@ACTIVE_ONLY", SqlDbType.Bit) { Value = activeOnly });
+
+            await using var reader = await cmd.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false);
+
+            while (await reader.ReadAsync(cancellationToken).ConfigureAwait(false))
+            {
+                items.Add(MapReaderToModel(reader));
+            }
+
+            return items;
+        }
+
 
         private ItemMasterModel MapReaderToModel(SqlDataReader r)
         {
